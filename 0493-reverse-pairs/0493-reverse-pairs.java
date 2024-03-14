@@ -5,34 +5,39 @@ class Solution {
     }
 
     public static void merge(int arr[], int low, int mid, int high){
-        ArrayList<Integer> temp = new ArrayList<>();
+        int[] temp = new int[high - low + 1];
 
         int left = low;
         int right = mid+1;
+        int index = 0;
 
         while(left <= mid && right <= high){
             if(arr[left] <= arr[right]){
-                temp.add(arr[left]);
+                temp[index] = arr[left];
                 left++;
+                index++;
             }
             else{
-                temp.add(arr[right]);
+                temp[index] = arr[right];
                 right++;
+                index++;
             }
         }
 
             while(left <= mid){
-                temp.add(arr[left]);
+                temp[index] = arr[left];
                 left++;
+                index++;
             }
 
             while(right <= high){
-                temp.add(arr[right]);
+                temp[index] = arr[right];
                 right++;
+                index++;
             }
 
             for(int i = low; i <= high; i++){
-                arr[i] = temp.get(i - low);
+                arr[i] = temp[i - low];
             }
     }
 
