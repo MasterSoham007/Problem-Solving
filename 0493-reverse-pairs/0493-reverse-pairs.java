@@ -4,54 +4,57 @@ class Solution {
         return mergeSortAndCount(nums, 0, nums.length - 1);
     }
 
-    private int mergeSortAndCount(int[] nums, int low, int high) {
-        if (low >= high) return 0;
+    public static void merge(int arr[], int low, int mid, int high){
+        ArrayList<Integer> temp = new ArrayList<>();
 
-        int mid = low + (high - low) / 2;
-        int count = mergeSortAndCount(nums, low, mid) + mergeSortAndCount(nums, mid + 1, high);
-        
-        // Counting the number of reverse pairs
         int left = low;
-        int right = mid + 1;
-        while (left <= mid && right <= high) {
-            if ((long)nums[left] > 2 * (long)nums[right]) {
-                count += mid - left + 1;
-                right++;
-            } else {
+        int right = mid+1;
+
+        while(left <= mid && right <= high){
+            if(arr[left] <= arr[right]){
+                temp.add(arr[left]);
                 left++;
             }
-        }
-        
-        // Merge step
-        merge(nums, low, mid, high);
-        
-        return count;
-    }
-
-    private void merge(int[] nums, int low, int mid, int high) {
-        int[] temp = new int[high - low + 1];
-
-        int left = low;
-        int right = mid + 1;
-        int idx = 0;
-
-        while (left <= mid && right <= high) {
-            if (nums[left] <= nums[right]) {
-                temp[idx++] = nums[left++];
-            } else {
-                temp[idx++] = nums[right++];
+            else{
+                temp.add(arr[right]);
+                right++;
             }
         }
 
-        while (left <= mid) {
-            temp[idx++] = nums[left++];
+            while(left <= mid){
+                temp.add(arr[left]);
+                left++;
+            }
+
+            while(right <= high){
+                temp.add(arr[right]);
+                right++;
+            }
+
+            for(int i = low; i <= high; i++){
+                arr[i] = temp.get(i - low);
+            }
+    }
+
+    public static int mergeSortAndCount(int arr[], int low, int high){
+        int cnt = 0;
+
+        if(low >= high) return cnt;
+        int mid = (low + high) / 2;
+
+        cnt = mergeSortAndCount(arr, low, mid) + mergeSortAndCount(arr, mid + 1, high);
+
+        int right = mid + 1;
+        
+        for(int i = low; i <= mid; i++){
+            while(right <= high && (long)arr[i] > 2 * (long)arr[right]){
+                right++;
+            }
+            cnt = cnt + (right - (mid + 1));
         }
 
-        while (right <= high) {
-            temp[idx++] = nums[right++];
-        }
+        merge(arr, low, mid, high);
 
-        // Copy back the merged elements to the original array
-        System.arraycopy(temp, 0, nums, low, temp.length);
+        return cnt;
     }
 }
