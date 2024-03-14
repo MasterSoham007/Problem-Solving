@@ -35,10 +35,8 @@ class Solution {
                 right++;
                 index++;
             }
-
-            for(int i = low; i <= high; i++){
-                arr[i] = temp[i - low];
-            }
+        
+        System.arraycopy(temp, 0, arr, low, temp.length);
     }
 
     public static int mergeSortAndCount(int arr[], int low, int high){
