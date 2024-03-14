@@ -1,67 +1,57 @@
 class Solution {
-    
-    public static void merge(int arr[], int low, int mid, int high){
-        ArrayList<Integer> temp = new ArrayList<>();
+
+    public int reversePairs(int[] nums) {
+        return mergeSortAndCount(nums, 0, nums.length - 1);
+    }
+
+    private int mergeSortAndCount(int[] nums, int low, int high) {
+        if (low >= high) return 0;
+
+        int mid = low + (high - low) / 2;
+        int count = mergeSortAndCount(nums, low, mid) + mergeSortAndCount(nums, mid + 1, high);
+        
+        // Counting the number of reverse pairs
+        int left = low;
+        int right = mid + 1;
+        while (left <= mid && right <= high) {
+            if ((long)nums[left] > 2 * (long)nums[right]) {
+                count += mid - left + 1;
+                right++;
+            } else {
+                left++;
+            }
+        }
+        
+        // Merge step
+        merge(nums, low, mid, high);
+        
+        return count;
+    }
+
+    private void merge(int[] nums, int low, int mid, int high) {
+        int[] temp = new int[high - low + 1];
 
         int left = low;
-        int right = mid+1;
-
-        while(left <= mid && right <= high){
-            if(arr[left] <= arr[right]){
-                temp.add(arr[left]);
-                left++;
-            }
-            else{
-                temp.add(arr[right]);
-                right++;
-            }
-        }
-
-            while(left <= mid){
-                temp.add(arr[left]);
-                left++;
-            }
-
-            while(right <= high){
-                temp.add(arr[right]);
-                right++;
-            }
-
-            for(int i = low; i <= high; i++){
-                arr[i] = temp.get(i - low);
-            }
-    }
-
-    public static int countPairs(int arr[], int low, int mid, int high){
-        int cnt = 0;
         int right = mid + 1;
+        int idx = 0;
 
-        for(int i = low; i <= mid; i++){
-            while(right <= high && (long)arr[i] > 2 * (long)arr[right]){
-                right++;
+        while (left <= mid && right <= high) {
+            if (nums[left] <= nums[right]) {
+                temp[idx++] = nums[left++];
+            } else {
+                temp[idx++] = nums[right++];
             }
-            cnt = cnt + (right - (mid + 1));
         }
 
-        return cnt;
-    }
+        while (left <= mid) {
+            temp[idx++] = nums[left++];
+        }
 
-    public static int mergeSort(int arr[], int low, int high){
-        int cnt = 0;
+        while (right <= high) {
+            temp[idx++] = nums[right++];
+        }
 
-        if(low >= high) return cnt;
-        int mid = (low + high) / 2;
-
-        cnt += mergeSort(arr, low, mid);
-        cnt += mergeSort(arr, mid + 1, high);
-        cnt += countPairs(arr, low, mid , high);
-        merge(arr, low, mid, high);
-
-        return cnt;
-    }
-    
-    public int reversePairs(int[] nums) {
-        int n = nums.length;
-        return mergeSort(nums, 0, n-1);
+        // Copy back the merged elements to the original array
+        System.arraycopy(temp, 0, nums, low, temp.length);
     }
 }
