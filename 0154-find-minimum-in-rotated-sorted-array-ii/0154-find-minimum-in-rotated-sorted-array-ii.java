@@ -14,10 +14,10 @@ class Solution {
                 continue;
             }
 
-            if (arr[low] < arr[high]) {
-                ans = Math.min(ans, arr[low]);
-                break;
-            }
+            // if (arr[low] < arr[high]) {
+            //     ans = Math.min(ans, arr[low]);
+            //     break;
+            // }
 
             if (arr[low] <= arr[mid]) {
                 ans = Math.min(ans, arr[low]);
